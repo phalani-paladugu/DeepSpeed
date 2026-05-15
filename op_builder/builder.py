@@ -421,6 +421,9 @@ class OpBuilder(ABC):
         if cpu_info['arch'].startswith('PPC_'):
             # gcc does not provide -march on PowerPC, use -mcpu instead
             return '-mcpu=native'
+        elif cpu_info['arch'].startswith('ARM_'):
+            # ARM/AArch64: -mcpu=native enables arch + micro-arch tuning (both GCC and Clang)
+            return '-mcpu=native'
         elif cpu_info['arch'].startswith('riscv64'):
             return '-march=rv64gc'
         return '-march=native'
@@ -458,6 +461,8 @@ class OpBuilder(ABC):
                 cpu_info['flags'] += 'avx2'
         elif 'ppc64le' in result:
             cpu_info['arch'] = "PPC_"
+        elif 'aarch64' in result or 'arm' in result:
+            cpu_info['arch'] = "ARM_"
         elif 'riscv64' in result:
             cpu_info['arch'] = "riscv64"
 
